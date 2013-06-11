@@ -74,13 +74,17 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 		// }
 		
 		// get the principal path
-		$principalBackend = $this->getPrincipalBackend();
-		$principalPath = $principalBackend->searchPrincipals('principals/users', array('{http://sabredav.org/ns}email-address'=>$add[0]['href']));
-		if($principalPath == 0) {
-			throw new \Exception("Unknown email address");
-		}
-		// use the path to get the principal
-		$principal = $principalBackend->getPrincipalByPath($principalPath);
+//		$principalBackend = $this->getPrincipalBackend();
+//		$principalPath = $principalBackend->searchPrincipals('principals/users', array('{http://sabredav.org/ns}email-address'=>$add[0]['href']));
+//		if($principalPath == 0) {
+//			throw new \Exception("Unknown email address");
+//		}
+//		// use the path to get the principal
+//		$principal = $principalBackend->getPrincipalByPath($principalPath);
+                
+                // get the principal based on the supplied email address
+                
+                $principal = $this->getPrincipalByEmail($add[0]['href']);
 		
 		$fields[':member'] = $principal['id'];
 		
@@ -103,8 +107,10 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 			$r_ids = array();
 			foreach($remove as $r_mailto) {
 				// get the principalid
-				$r_principal = $this->getPrinicpalBackend()->getPrincipalByMailto($r_mailto);
-				$r_ids[] = $r_principal;
+                                $r_principal = $this->getPrincipalByEmail($r_mailto);
+                                $r_ids[] = $r_principal['id'];
+//				$r_principal = $this->getPrinicpalBackend()->getPrincipalByMailto($r_mailto);
+//				$r_ids[] = $r_principal;
 			}	
 			$stmt = $this->pdo->prepare("DELETE FROM ".$this->calendarSharesTableName." WHERE MEMBER = ?");
 			$stmt->execute($r_ids);
@@ -335,7 +341,18 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 */
 	public function deleteNotification($principalUri, \Sabre\CalDAV\Notifications\INotificationType $notification){ }
 
-	
+	private function getPrincipalByEmail($email) {
+            
+            $principalBackend = $this->getPrincipalBackend();
+            $principalPath = $principalBackend->searchPrincipals('principals/users', array('{http://sabredav.org/ns}email-address'=>$email));
+            if($principalPath == 0) {
+			throw new \Exception("Unknown email address");
+            }
+		// use the path to get the principal
+            return $principalBackend->getPrincipalByPath($principalPath);
+        }
+        
+        
 	private function getPrincipalBackend() {
 		return new \Sabre\DAVACL\PrincipalBackend\PDO($this->pdo);
 	}
