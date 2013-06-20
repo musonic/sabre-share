@@ -66,21 +66,6 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	{ 
 		$fields = array();
 		$fields[':calendarId'] = $calendarId; 
-		
-		// get the principal id based on the mailto address
-		// $principal_id = $this->getPrincipalBackend()->getPrincipalByMailto($add[0]['href']);
-		// if($principal_id == null) {
-			// throw new \Exception("Unknown email address");
-		// }
-		
-		// get the principal path
-//		$principalBackend = $this->getPrincipalBackend();
-//		$principalPath = $principalBackend->searchPrincipals('principals/users', array('{http://sabredav.org/ns}email-address'=>$add[0]['href']));
-//		if($principalPath == 0) {
-//			throw new \Exception("Unknown email address");
-//		}
-//		// use the path to get the principal
-//		$principal = $principalBackend->getPrincipalByPath($principalPath);
                 
                 // get the principal based on the supplied email address
                 
@@ -109,8 +94,6 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 				// get the principalid
                                 $r_principal = $this->getPrincipalByEmail($r_mailto);
                                 $r_ids[] = $r_principal['id'];
-//				$r_principal = $this->getPrinicpalBackend()->getPrincipalByMailto($r_mailto);
-//				$r_ids[] = $r_principal;
 			}	
 			$stmt = $this->pdo->prepare("DELETE FROM ".$this->calendarSharesTableName." WHERE MEMBER = ?");
 			$stmt->execute($r_ids);
@@ -205,8 +188,8 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 		$fields[] = 'transparent';
 	
 		// Making fields a comma-delimited list
-		$fields = implode(', ', $fields);
-		$stmt = $this->pdo->prepare("SELECT " . $fields . " FROM ".$this->calendarTableName." WHERE principaluri = ? ORDER BY calendarorder ASC");
+		$fields_list = implode(', ', $fields);
+		$stmt = $this->pdo->prepare("SELECT " . $fields_list . " FROM ".$this->calendarTableName." WHERE principaluri = ? ORDER BY calendarorder ASC");
 		$stmt->execute(array($principalUri));
 	
 		$calendars = array();
@@ -246,7 +229,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 		$shareStmt->execute(array($principal['id']));
 		while($shareRow = $shareStmt->fetch(\PDO::FETCH_ASSOC)) {
 			// get the original calendar
-			$calStmt = $this->pdo->prepare("SELECT " . $fields . " FROM ".$this->calendarTableName." WHERE id = ? ORDER BY calendarorder ASC LIMIT 1");
+			$calStmt = $this->pdo->prepare("SELECT " . $fields_list . " FROM ".$this->calendarTableName." WHERE id = ? ORDER BY calendarorder ASC LIMIT 1");
 			$calStmt->execute(array($shareRow['calendarId']));
 			
 			while($calendarShareRow = $calStmt->fetch(\PDO::FETCH_ASSOC)) {
