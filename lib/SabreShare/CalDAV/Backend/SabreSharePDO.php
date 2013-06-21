@@ -286,7 +286,10 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * @param string $summary A description of the reply
 	 * @return null|string
 	 */
-	function shareReply($href, $status, $calendarUri, $inReplyTo, $summary = null){ }
+	function shareReply($href, $status, $calendarUri, $inReplyTo, $summary = null){
+            
+            
+        }
 	
 	/**
 	 * Marks this calendar as published.
