@@ -22,18 +22,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * List of properties for the calendar shares table
 	 * This list maps exactly to the field names in the db table
 	 */
-	public $sharesProperties = array(
-                        'email',
-                        'uri',
-                        'displayname',
-			'calendarId',
-			'member',
-			'status',
-			'readOnly',
-			'summary',
-// 			'displayName',
-// 			'colour'
-		);
+	public $sharesProperties;
 	
 	/**
 	 * Creates the backend
@@ -47,6 +36,19 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 		parent::__construct($pdo, $calendarTableName, $calendarObjectTableName);
 		$this->calendarSharesTableName = $calendarSharesTableName;
                 $this->principalsTableName = $principalsTableName;
+                
+                $this->sharesProperties = array(
+                        $this->principalsTableName.'.email',
+                        $this->principalsTableName.'.uri',
+                        $this->principalsTableName.'.displayname',
+			$this->calendarSharesTableName.'.calendarId',
+			$this->calendarSharesTableName.'.member',
+			$this->calendarSharesTableName.'.status',
+			$this->calendarSharesTableName.'.readOnly',
+			$this->calendarSharesTableName.'.summary',
+// 			'displayName',
+// 			'colour'
+		)
 	
 	}
 	
