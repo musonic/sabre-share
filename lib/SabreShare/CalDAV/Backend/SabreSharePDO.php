@@ -22,7 +22,15 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * List of properties for the calendar shares table
 	 * This list maps exactly to the field names in the db table
 	 */
-	public $sharesProperties;
+	public $sharesProperties = array(
+			'calendarId',
+			'member',
+			'status',
+			'readOnly',
+			'summary',
+// 			'displayName',
+// 			'colour'
+		);
 	
 	/**
 	 * Creates the backend
@@ -36,19 +44,6 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 		parent::__construct($pdo, $calendarTableName, $calendarObjectTableName);
 		$this->calendarSharesTableName = $calendarSharesTableName;
                 $this->principalsTableName = $principalsTableName;
-                
-                $this->sharesProperties = array(
-                        $this->principalsTableName.'.email',
-                        $this->principalsTableName.'.uri',
-                        $this->principalsTableName.'.displayname',
-			$this->calendarSharesTableName.'.calendarId',
-			$this->calendarSharesTableName.'.member',
-			$this->calendarSharesTableName.'.status',
-			$this->calendarSharesTableName.'.readOnly',
-			$this->calendarSharesTableName.'.summary',
-// 			'displayName',
-// 			'colour'
-		);
 	
 	}
 	
@@ -127,7 +122,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 */
 	public function getShares($calendarId) {
 		
-		$fields = implode(', ', $this->sharesProperties);
+//		$fields = implode(', ', $this->sharesProperties);
 		$stmt = $this->pdo->prepare("SELECT * FROM ".$this->calendarSharesTableName." AS calendarShares LEFT JOIN ".$this->principalsTableName."  AS principals ON calendarShares.member = principals.id WHERE calendarShares.calendarId = ? ORDER BY calendarShares.calendarId ASC");
 		$stmt->execute(array($calendarId));
 
@@ -164,8 +159,8 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 			
 			// get the member principal
 //			$memberPrincipal = $this->getPrincipalBackend()->getPrincipalById($row['member']);
-			$share['href'] = $memberPrincipal['{http://sabredav.org/ns}email-address'];
-			$share['commonName'] = $memberPrincipal['{DAV:}displayname'];
+//			$share['href'] = $memberPrincipal['{http://sabredav.org/ns}email-address'];
+//			$share['commonName'] = $memberPrincipal['{DAV:}displayname'];
 			
 			// add it to main array
 			$shares[] = $share;
