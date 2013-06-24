@@ -2,7 +2,7 @@
 namespace SabreShare\CalDAV\Backend;
 use Sabre\CalDAV\Backend as SabreBackend;
 
-class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupport, SabreBackend\NotificationSupport
+class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupport
 {
 	/**
 	 * The table name that will be used for calendar shares
