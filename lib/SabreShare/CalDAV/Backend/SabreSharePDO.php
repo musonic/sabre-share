@@ -48,7 +48,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 			$this->calendarSharesTableName.'.summary',
 // 			'displayName',
 // 			'colour'
-		)
+		);
 	
 	}
 	
