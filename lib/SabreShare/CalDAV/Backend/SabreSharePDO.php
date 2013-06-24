@@ -10,12 +10,22 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * @var string
 	 */
 	protected $calendarSharesTableName;
+        
+        /**
+	 * The table name that will be used for principals
+	 *
+	 * @var string
+	 */
+	protected $principalsTableName;
 	
 	/**
 	 * List of properties for the calendar shares table
 	 * This list maps exactly to the field names in the db table
 	 */
 	public $sharesProperties = array(
+                        'email',
+                        'uri',
+                        'displayname',
 			'calendarId',
 			'member',
 			'status',
@@ -32,10 +42,11 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * @param string $calendarTableName
 	 * @param string $calendarObjectTableName
 	 */
-	public function __construct(\PDO $pdo, $calendarTableName = 'calendars', $calendarObjectTableName = 'calendarobjects', $calendarSharesTableName = 'calendarShares') {
+	public function __construct(\PDO $pdo, $calendarTableName = 'calendars', $principalsTableName = 'principals', $calendarObjectTableName = 'calendarobjects', $calendarSharesTableName = 'calendarShares') {
 	
 		parent::__construct($pdo, $calendarTableName, $calendarObjectTableName);
 		$this->calendarSharesTableName = $calendarSharesTableName;
+                $this->principalsTableName = $principalsTableName;
 	
 	}
 	
@@ -115,7 +126,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	public function getShares($calendarId) {
 		
 		$fields = implode(', ', $this->sharesProperties);
-		$stmt = $this->pdo->prepare("SELECT " . $fields . " FROM ".$this->calendarSharesTableName." WHERE calendarId = ? ORDER BY calendarId ASC");
+		$stmt = $this->pdo->prepare("SELECT " . $fields . " FROM ".$this->calendarSharesTableName." AS calendarShares LEFT JOIN ".$this->principalsTableName."  AS principals ON calendarShares.member = principals.id WHERE calendarShares.calendarId = ? ORDER BY calendarShares.calendarId ASC");
 		$stmt->execute(array($calendarId));
 
 		$shares = array();
@@ -125,6 +136,9 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 							'summary'=>$row['summary'],
 // 							'displayName'=>$row['displayName'],
 // 							'colour'=>$row['colour']
+                                        'href'=>$row['email'],
+                                        'commonName' => $row['displayname'],
+                                        'principalPath' => $row['uri']
 					);
 			
 			// map the status integer to a predefined constant
@@ -147,7 +161,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 			}
 			
 			// get the member principal
-			$memberPrincipal = $this->getPrincipalBackend()->getPrincipalById($row['member']);
+//			$memberPrincipal = $this->getPrincipalBackend()->getPrincipalById($row['member']);
 			$share['href'] = $memberPrincipal['{http://sabredav.org/ns}email-address'];
 			$share['commonName'] = $memberPrincipal['{DAV:}displayname'];
 			
