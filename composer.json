@@ -2,7 +2,7 @@
     "name": "musonic/sabre-share",
     "description": "Plugin for SabreDAV library",
     "keywords": ["Plugin", "WebDAV", "CalDAV", "CardDAV", "iCalendar", "SabreDAV"],
-    "homepage": "https://github.com/musonic/sabre-accounts",
+    "homepage": "https://github.com/musonic/sabre-share",
     "license" : "BSD-3-Clause",
     "authors": [
         {
