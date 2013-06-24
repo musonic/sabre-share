@@ -129,7 +129,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 		$shares = array();
 		while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) { 
 			$share = array(	'calendarId'=>$row['calendarId'],
-							'readonly'=>$row['readOnly'],
+							'readonly'=>$row['readonly'],
 							'summary'=>$row['summary'],
 // 							'displayName'=>$row['displayName'],
 // 							'colour'=>$row['colour']
