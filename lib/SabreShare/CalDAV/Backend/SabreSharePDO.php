@@ -128,7 +128,7 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	public function getShares($calendarId) {
 		
 		$fields = implode(', ', $this->sharesProperties);
-		$stmt = $this->pdo->prepare("SELECT " . $fields . " FROM ".$this->calendarSharesTableName." AS calendarShares LEFT JOIN ".$this->principalsTableName."  AS principals ON calendarShares.member = principals.id WHERE calendarShares.calendarId = ? ORDER BY calendarShares.calendarId ASC");
+		$stmt = $this->pdo->prepare("SELECT * FROM ".$this->calendarSharesTableName." AS calendarShares LEFT JOIN ".$this->principalsTableName."  AS principals ON calendarShares.member = principals.id WHERE calendarShares.calendarId = ? ORDER BY calendarShares.calendarId ASC");
 		$stmt->execute(array($calendarId));
 
 		$shares = array();
