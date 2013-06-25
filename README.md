@@ -39,12 +39,12 @@ $calendarBackend->setCalendarSharesTableName('myTableName');
 ```
 
 The table MUST have the following columns:
-"calendarId"
-"member"
-"status"
-"readonly"
-"summary"
-"displayName"
+"calendarId",
+"member",
+"status",
+"readonly",
+"summary",
+"displayName",
 "color"
 
 Example sql:
