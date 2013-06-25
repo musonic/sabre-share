@@ -32,6 +32,37 @@ $calDavSharingPlugin = new \Sabre\CalDAV\SharingPlugin();
 $server->addPlugin($calDavSharingPlugin);  
 ```  
 
+You must also create a table in your database to store the shares. The default table name is "calendarShares" but this can be manually set by adding the following line to your server.php file:
+
+```php
+$calendarBackend->setCalendarSharesTableName('myTableName');
+```
+
+The table MUST have the following columns:
+"calendarId"
+"member"
+"status"
+"readonly"
+"summary"
+"displayName"
+"color"
+
+Example sql:
+
+```SQL
+CREATE TABLE `calendarShares` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `calendarId` int(11) NOT NULL,
+  `member` int(11) NOT NULL,
+  `status` int(1) NOT NULL,
+  `readonly` tinyint(1) NOT NULL DEFAULT '0',
+  `summary` varchar(150) DEFAULT NULL,
+  `displayName` varchar(100) DEFAULT NULL,
+  `color` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+```
+
 Usage
 -----
 
