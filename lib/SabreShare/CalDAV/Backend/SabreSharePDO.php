@@ -46,6 +46,14 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
                 $this->principalsTableName = $principalsTableName;
 	
 	}
+        
+        /**
+         * Setter method for the calendarShares table name
+         */
+        public function setCalendarSharesTableName($name)
+        {
+            $this->calendarSharesTableName = $name;
+        }
 	
 	/**
 	 * Updates the list of shares.
