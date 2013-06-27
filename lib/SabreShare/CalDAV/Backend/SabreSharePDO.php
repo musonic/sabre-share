@@ -137,38 +137,35 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 		$shares = array();
 		while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) { 
 			$share = array(	'calendarId'=>$row['calendarId'],
-							'readonly'=>$row['readonly'],
-							'summary'=>$row['summary'],
-// 							'displayName'=>$row['displayName'],
-// 							'colour'=>$row['colour']
+                                        'principalPath' => $row['uri'],
+                                        'readOnly'=>$row['readonly'],
+                                        'summary'=>$row['summary'],
                                         'href'=>$row['email'],
                                         'commonName' => $row['displayname'],
-                                        'principalPath' => $row['uri']
+                                        'displayName'=>$row['displayName'],
+                                        'status'=>$row['status']
+//                                        'colour'=>$row['colour'],
+//                                        'displayName'=>$row['displayName'],
 					);
 			
-			// map the status integer to a predefined constant
-			switch($row['status']) {
-				case 1: 
-					$share['status'] = 'STATUS_ACCEPTED'; 
-					break;
-				case 2: 
-					$share['status'] = 'STATUS_DECLINED'; 
-					break;
-				case 3: 
-					$share['status'] = 'STATUS_DELETED'; 
-					break;
-				case 4: 
-					$share['status'] = 'STATUS_NORESPONSE'; 
-					break;
-				case 5: 
-					$share['status'] = 'STATUS_INVALID'; 
-					break;
-			}
-			
-			// get the member principal
-//			$memberPrincipal = $this->getPrincipalBackend()->getPrincipalById($row['member']);
-//			$share['href'] = $memberPrincipal['{http://sabredav.org/ns}email-address'];
-//			$share['commonName'] = $memberPrincipal['{DAV:}displayname'];
+//			// map the status integer to a predefined constant
+//			switch($row['status']) {
+//				case 1: 
+//					$share['status'] = 'STATUS_ACCEPTED'; 
+//					break;
+//				case 2: 
+//					$share['status'] = 'STATUS_DECLINED'; 
+//					break;
+//				case 3: 
+//					$share['status'] = 'STATUS_DELETED'; 
+//					break;
+//				case 4: 
+//					$share['status'] = 'STATUS_NORESPONSE'; 
+//					break;
+//				case 5: 
+//					$share['status'] = 'STATUS_INVALID'; 
+//					break;
+//			}
 			
 			// add it to main array
 			$shares[] = $share;
