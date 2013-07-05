@@ -17,6 +17,13 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * @var string
 	 */
 	protected $principalsTableName;
+        
+        /**
+         * The table name that will be used for notifications
+         * 
+         * @var string
+         */
+        protected $notificationsTableName;
 	
 	/**
 	 * List of properties for the calendar shares table
@@ -39,11 +46,12 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * @param string $calendarTableName
 	 * @param string $calendarObjectTableName
 	 */
-	public function __construct(\PDO $pdo, $calendarTableName = 'calendars', $principalsTableName = 'principals', $calendarObjectTableName = 'calendarobjects', $calendarSharesTableName = 'calendarShares') {
+	public function __construct(\PDO $pdo, $calendarTableName = 'calendars', $principalsTableName = 'principals', $calendarObjectTableName = 'calendarobjects', $calendarSharesTableName = 'calendarShares', $notificationsTableName = 'notifications') {
 	
 		parent::__construct($pdo, $calendarTableName, $calendarObjectTableName);
 		$this->calendarSharesTableName = $calendarSharesTableName;
                 $this->principalsTableName = $principalsTableName;
+                $this->notificationsTableName = $notificationsTableName;
 	
 	}
         
@@ -330,7 +338,71 @@ class SabreSharePDO extends SabreBackend\PDO implements SabreBackend\SharingSupp
 	 * @param string $principalUri
 	 * @return array
 	 */
-	public function getNotificationsForPrincipal($principalUri){ }
+	public function getNotificationsForPrincipal($principalUri){ 
+            
+            // get ALL notifications for the user NB. Any read or out of date notifications should be already deleted.
+            $stmt = $this->pdo->prepare("SELECT * FROM ".$this->notificationsTableName." WHERE principaluri = ? ORDER BY dtstamp ASC");
+            $stmt->execute(array($principalUri));
+            
+            $notifications = array();
+            while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                
+                // we need to return the correct type of notification
+                switch($row['notification']) {
+                    
+                    case 'Invite':
+                            $values = array();
+                            // sort out the required data
+                            if($row['id']) {
+                                $values['id'] = $row['id'];
+                            }
+                            if($row['etag']) {
+                                $values['etag'] = $row['etag'];
+                            }
+                            if($row['principalUri']) {
+                                $values['href'] = $row['principalUri'];
+                            }
+                            if($row['dtstamp']) {
+                                $values['dtstamp'] = $row['dtstamp'];
+                            }
+                            if($row['type']) {
+                                $values['type'] = $row['type'];
+                            }
+                            if($row['readOnly']) {
+                                $values['readOnly'] = $row['readOnly'];
+                            }
+                            if($row['hostUrl']) {
+                                $values['hostUrl'] = $row['hostUrl'];
+                            }
+                            if($row['organizer']) {
+                                $values['organizer'] = $row['organizer'];
+                            }
+                            if($row['commonName']) {
+                                $values['commonName'] = $row['commonName'];
+                            }
+                            if($row['firstName']) {
+                                $values['firstName'] = $row['firstName'];
+                            }
+                            if($row['lastName']) {
+                                $values['lastName'] = $row['lastName'];
+                            }
+                            if($row['summary']) {
+                                $values['summary'] = $row['summary'];
+                            }
+                            
+                            $notifications[] = new \Sabre\CalDAV\Notifications\Notification\Invite($values);
+                        break;
+                        
+                    case 'InviteReply':
+                        break;
+                    case 'SystemStatus':
+                        break;
+                }
+                
+            }
+            
+            return $notifications;
+        }
 	
 	/**
 	 * This deletes a specific notifcation.
