@@ -1,15 +1,15 @@
-sabre-share
+#sabre-share
 ===========
 
 Plugin for for [SabreDAV](https://github.com/evert/SabreDAV) a WebDAV framework for PHP.
 This plugin implements calendar sharing as outlined here https://trac.calendarserver.org/browser/CalendarServer/trunk/doc/Extensions/caldav-sharing.txt
 
-Requirements
+##Requirements
 ------------
 
 This requires SabreDAV version 1.8 or later.
 
-Installation
+##Installation
 ------------
 
 To install this plugin, make sure you have SabreDAV installed using the composer installation instructions.
@@ -21,7 +21,7 @@ To add this plugin, just add the following line to your composer file in the `re
 
 After adding that, you can just run `composer update` to complete the installation.
 
-Setup
+##Setup
 -----
 
 Update your server.php file (or whatever you have named it)
@@ -63,7 +63,7 @@ CREATE TABLE `calendarShares` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 ```
 
-Usage
+##Usage
 -----
 
 Please note that this plugin does not come with a GUI. If you have set it up correctly you should now be able to share calendars with other users identified by their
